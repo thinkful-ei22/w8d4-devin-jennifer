@@ -38,18 +38,35 @@ export class App extends React.Component {
     clearInterval(this.refreshInterval);
   }
   
-  autoLogOut(){
-    this.logOut = setInterval(
-      this.props.dispatch(clearAuth()),
-      5 * 60 * 1000
-    );
+  refreshActivity(){
+    // if(this.alertIdleTimer) window.clearTimer(this.alertIdleTimer);
+    // if(this.activityTimer && this.props.loggedIn){
+    //     this.alertIdleTimer = setTimeout(
+    //         () => this.alertIdle(),
+    //         5 * 1000
+    //     );
+    // }
+    
+    if(this.activityTimer) window.clearTimeout(this.activityTimer);
+    this.activityTimer = setTimeout(
+        () => this.autoLogout(),
+        10 * 1000);
+
+  }
+
+//   alertIdle(){
+//     window.alert('You are about to be logged out for inactivity.');
+//   }
+
+  autoLogout(){
+    this.props.dispatch(clearAuth());
   }
 
   render() {
     return (
-      <div className="app" onClick={() => setTimeout(
-        ()=> this.props.dispatch(clearAuth()),
-        10000)}>
+      <div className="app" onClick={()=>{
+            this.refreshActivity();
+        }}>
         <HeaderBar />
         <Route exact path="/" component={LandingPage} />
         <Route exact path="/dashboard" component={Dashboard} />
