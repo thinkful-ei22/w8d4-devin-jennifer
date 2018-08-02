@@ -39,24 +39,25 @@ export class App extends React.Component {
   }
   
   refreshActivity(){
-    // if(this.alertIdleTimer) window.clearTimer(this.alertIdleTimer);
-    // if(this.activityTimer && this.props.loggedIn){
-    //     this.alertIdleTimer = setTimeout(
-    //         () => this.alertIdle(),
-    //         5 * 1000
-    //     );
-    // }
+    if(this.alertIdleTimer) window.clearTimeout(this.alertIdleTimer);
+    if(this.props.loggedIn){
+        this.alertIdleTimer = setTimeout(
+            () => this.alertIdle(),
+            5 * 1000
+        );
+    }
     
     if(this.activityTimer) window.clearTimeout(this.activityTimer);
     this.activityTimer = setTimeout(
         () => this.autoLogout(),
         10 * 1000);
-
   }
 
-//   alertIdle(){
-//     window.alert('You are about to be logged out for inactivity.');
-//   }
+  alertIdle(){
+    const stayLogged = window.confirm('You are about to be logged out for inactivity. Please press ok to stay logged in.');
+    if(stayLogged) this.refreshActivity();
+    // else this.props.dispatch(clearAuth());
+  }
 
   autoLogout(){
     this.props.dispatch(clearAuth());
