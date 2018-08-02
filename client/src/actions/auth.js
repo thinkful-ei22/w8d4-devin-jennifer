@@ -33,11 +33,12 @@ export const authError = error => ({
   error
 });
 
-// export const AUTH_ACTIVITY = 'AUTH_ACTIVITY';
-// export const authActivity = activity => ({
-//   type: AUTH_ACTIVITY,
-//   activity
-// });
+export const AUTH_SET_WARNING = 'AUTH_SET_WARNING';
+export const authSetWarning = warning => ({
+  type: AUTH_SET_WARNING,
+  warning
+});
+
 // Stores the auth token in state and localStorage, and decodes and stores
 // the user data stored in the token
 const storeAuthInfo = (authToken, dispatch) => {

@@ -4,7 +4,7 @@ import {
   AUTH_REQUEST,
   AUTH_SUCCESS,
   AUTH_ERROR,
-  // AUTH_ACTIVITY
+  AUTH_SET_WARNING
 } from '../actions/auth';
 
 const initialState = {
@@ -12,7 +12,7 @@ const initialState = {
   currentUser: null,
   loading: false,
   error: null,
-  activity: null
+  warning: false
 };
 
 export default function reducer(state = initialState, action) {
@@ -23,7 +23,8 @@ export default function reducer(state = initialState, action) {
   } else if (action.type === CLEAR_AUTH) {
     return Object.assign({}, state, {
       authToken: null,
-      currentUser: null
+      currentUser: null,
+      warning: false
     });
   } else if (action.type === AUTH_REQUEST) {
     return Object.assign({}, state, {
@@ -40,10 +41,10 @@ export default function reducer(state = initialState, action) {
       loading: false,
       error: action.error
     });
-  // } else if (action.type === AUTH_ACTIVITY){
-  //   return Object.assign({}, state, {
-  //     activity: action.activity
-  //   });
+  } else if (action.type === AUTH_SET_WARNING){
+    return Object.assign({}, state, {
+      warning: action.warning
+    });
   }
   return state;
 }

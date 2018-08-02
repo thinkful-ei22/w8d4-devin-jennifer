@@ -5,8 +5,9 @@ import {Route, withRouter} from 'react-router-dom';
 import HeaderBar from './header-bar';
 import LandingPage from './landing-page';
 import Dashboard from './dashboard';
+import AlertBox from './alertBox';
 import RegistrationPage from './registration-page';
-import {refreshAuthToken, clearAuth} from '../actions/auth';
+import {refreshAuthToken, clearAuth, authSetWarning} from '../actions/auth';
 
 export class App extends React.Component {
   componentDidUpdate(prevProps) {
@@ -16,6 +17,9 @@ export class App extends React.Component {
     } else if (prevProps.loggedIn && !this.props.loggedIn) {
       // Stop refreshing when we log out
       this.stopPeriodicRefresh();
+    }
+    if(this.props.loggedIn && !this.alertIdleTimer){
+      this.refreshActivity();
     }
   }
 
@@ -41,34 +45,26 @@ export class App extends React.Component {
   refreshActivity(){
     if(this.alertIdleTimer) window.clearTimeout(this.alertIdleTimer);
     if(this.props.loggedIn){
-        this.alertIdleTimer = setTimeout(
-            () => this.alertIdle(),
-            5 * 1000
-        );
+      this.alertIdleTimer = setTimeout(
+        () => this.props.dispatch(authSetWarning(true)),
+        5 * 1000
+      );
     }
     
     if(this.activityTimer) window.clearTimeout(this.activityTimer);
     this.activityTimer = setTimeout(
-        () => this.autoLogout(),
-        10 * 1000);
+      () => this.props.dispatch(clearAuth()),
+      10 * 1000);
   }
 
-  alertIdle(){
-    const stayLogged = window.confirm('You are about to be logged out for inactivity. Please press ok to stay logged in.');
-    if(stayLogged) this.refreshActivity();
-    // else this.props.dispatch(clearAuth());
-  }
-
-  autoLogout(){
-    this.props.dispatch(clearAuth());
-  }
 
   render() {
     return (
       <div className="app" onClick={()=>{
-            this.refreshActivity();
-        }}>
+        this.refreshActivity();
+      }}>
         <HeaderBar />
+        <AlertBox />
         <Route exact path="/" component={LandingPage} />
         <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/register" component={RegistrationPage} />
